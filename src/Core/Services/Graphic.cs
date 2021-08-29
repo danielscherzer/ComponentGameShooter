@@ -17,7 +17,7 @@ namespace Core.Services
 	{
 		internal Graphic()
 		{
-			var textureDir = new EmbeddedResourceDirectory(nameof(Example) + ".Textures");
+			var textureDir = new EmbeddedResourceDirectory(nameof(Example) + ".Content.Textures");
 
 			// load textures
 			foreach(var resourceName in textureDir.EnumerateResources())
@@ -28,7 +28,7 @@ namespace Core.Services
 				spriteBatches.Add(shortName, new List<Tuple<Box2, Box2>>());
 			}
 
-			var spriteSheetDir = new EmbeddedResourceDirectory(nameof(Example) + ".SpriteSheets");
+			var spriteSheetDir = new EmbeddedResourceDirectory(nameof(Example) + ".Content.SpriteSheets");
 			var serializer = new XmlSerializer(typeof(SpriteSheet));
 			// load sprite sheets
 			foreach (var resourceName in spriteSheetDir.EnumerateResources())

@@ -18,7 +18,7 @@ namespace Example
 	{
 		internal static void Load(IScene scene)
 		{
-			var sceneDir = new EmbeddedResourceDirectory(nameof(Example) + ".Scene");
+			var sceneDir = new EmbeddedResourceDirectory(nameof(Example) + ".Content.Scene");
 			var collisionDetection = scene.GetService<ICollisionDetection>();
 			using (var stream = sceneDir.Open("collisionLayers.json"))
 			{

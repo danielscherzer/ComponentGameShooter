@@ -11,12 +11,32 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="Images\blueLaserRay.png" />
-    <Content Include="Images\blueShip.png" />
-    <Content Include="Images\redLaserRay.png" />
-    <Content Include="Images\redship4.png" />
-    <Content Include="Images\explosion.png" />
-    <Content Include="Images\Video Phreak.png" />
+    <None Remove="Textures\awhite.png" />
+    <None Remove="Textures\explosion.xml" />
+    <None Remove="Textures\goblin_0.png" />
+    <None Remove="Textures\goblin_0.xml" />
+    <None Remove="Textures\Video Phreak.xml" />
+    <None Remove="Scene\collisionLayers.json" />
+    <None Remove="Scene\prototypes.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Textures\blueLaserRay.png" />
+    <EmbeddedResource Include="Textures\blueShip.png" />
+    <EmbeddedResource Include="Textures\redLaserRay.png" />
+    <EmbeddedResource Include="Textures\redship4.png" />
+    <EmbeddedResource Include="Textures\explosion.png" />
+    <EmbeddedResource Include="Textures\Video Phreak.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Textures\awhite.png" />
+    <EmbeddedResource Include="SpriteSheets\explosion.xml" />
+    <EmbeddedResource Include="Textures\goblin_0.png" />
+    <EmbeddedResource Include="SpriteSheets\goblin_0.xml" />
+    <EmbeddedResource Include="SpriteSheets\Video Phreak.xml" />
+    <EmbeddedResource Include="Scene\collisionLayers.json" />
+    <EmbeddedResource Include="Scene\prototypes.json" />
   </ItemGroup>
 
   <ItemGroup>

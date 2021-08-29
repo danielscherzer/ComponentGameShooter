@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml.Serialization;
+using Zenseless.OpenTK;
+using Zenseless.Resources;
 
 namespace Core.Services
 {
@@ -15,23 +17,27 @@ namespace Core.Services
 	{
 		internal Graphic()
 		{
+			var textureDir = new EmbeddedResourceDirectory(nameof(Example) + ".Textures");
+
 			// load textures
-			void LoadSprite(string name, Stream stream)
+			foreach(var resourceName in textureDir.EnumerateResources())
 			{
-				var shortName = Path.GetFileNameWithoutExtension(name);
-				textures.Add(shortName, new Texture2d(stream));
+				using var stream = textureDir.Open(resourceName);
+				var shortName = Path.GetFileNameWithoutExtension(resourceName);
+				textures.Add(shortName, Texture2DLoader.Load(stream));
 				spriteBatches.Add(shortName, new List<Tuple<Box2, Box2>>());
 			}
-			ResourceStreams.IterateOverFiles("Images", LoadSprite);
+
+			var spriteSheetDir = new EmbeddedResourceDirectory(nameof(Example) + ".SpriteSheets");
 			var serializer = new XmlSerializer(typeof(SpriteSheet));
-			void LoadSpriteSheet(string name, Stream stream)
+			// load sprite sheets
+			foreach (var resourceName in spriteSheetDir.EnumerateResources())
 			{
-				var shortName = Path.GetFileNameWithoutExtension(name);
+				using var stream = spriteSheetDir.Open(resourceName);
 				var spriteSheet = serializer.Deserialize(stream) as SpriteSheet;
+				var shortName = Path.GetFileNameWithoutExtension(resourceName);
 				spriteSheets.Add(shortName, spriteSheet);
 			}
-			ResourceStreams.IterateOverFiles("SpriteSheets", LoadSpriteSheet);
-
 			GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 		}
 
@@ -93,7 +99,7 @@ namespace Core.Services
 			return spriteSheet.CalcTexCoordsFromAnimationTime(normalizedAnimationTime);
 		}
 
-		private readonly Dictionary<string, Texture2d> textures = new();
+		private readonly Dictionary<string, Texture2D> textures = new();
 		private readonly Dictionary<string, List<Tuple<Box2, Box2>>> spriteBatches = new();
 		private readonly Dictionary<string, SpriteSheet> spriteSheets = new();
 		private readonly List<Box2> rectangles = new();
@@ -117,7 +123,7 @@ namespace Core.Services
 			foreach (var spriteBatch in spriteBatches)
 			{
 				var texture = textures[spriteBatch.Key];
-				texture.Bind();
+				GL.BindTextureUnit(0, texture.Handle);
 				foreach (var sprite in spriteBatch.Value)
 				{
 					DrawTextured(sprite.Item1, sprite.Item2);

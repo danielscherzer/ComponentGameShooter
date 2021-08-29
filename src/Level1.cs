@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Zenseless.OpenTK;
+using Zenseless.Resources;
 
 namespace Example
 {
@@ -17,8 +18,9 @@ namespace Example
 	{
 		internal static void Load(IScene scene)
 		{
+			var sceneDir = new EmbeddedResourceDirectory(nameof(Example) + ".Scene");
 			var collisionDetection = scene.GetService<ICollisionDetection>();
-			using (var stream = ResourceStreams.OpenStream("Scene", "collisionLayers"))
+			using (var stream = sceneDir.Open("collisionLayers.json"))
 			{
 				using var reader = new StreamReader(stream);
 				var text = reader.ReadToEnd();
@@ -40,7 +42,7 @@ namespace Example
 
 			var prototypes = new Dictionary<string, IGameObject>();
 			//var converter = new JsonConverter[] { new ConvertRectangle() };
-			using (var stream = ResourceStreams.OpenStream("Scene", "prototypes"))
+			using (var stream = sceneDir.Open("prototypes.json"))
 			{
 				using var reader = new StreamReader(stream);
 				var text = reader.ReadToEnd();

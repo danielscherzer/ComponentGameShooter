@@ -1,0 +1,4 @@
+{
+	"Player" : [ "Enemies", "EnemyLaser" ],
+	"PlayerLaser" : [ "Enemies" ]
+}

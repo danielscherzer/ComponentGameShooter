@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<SpriteSheet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<SpritesPerColumn>5</SpritesPerColumn>
+	<SpritesPerRow>5</SpritesPerRow>
+	<FirstASCII>0</FirstASCII>
+</SpriteSheet>

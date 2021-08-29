@@ -1,0 +1,37 @@
+{
+  "Explosion": {
+    "ExpiringBehavior": [ 1.0 ],
+    "AnimatedSpriteDrawable": [ "explosion", 1.0, false ]
+  },
+  "Score": {
+    "TextDrawable": [ "Video Phreak" ]
+  },
+  "EnemyLaser": {
+    "ExpiringBehavior": [ 3.0 ],
+    "MovementBehavior": [ 0.0, -0.5 ],
+    "SpriteDrawable": [ "redLaserRay" ],
+    "ColliderDrawable": null
+  },
+  "Player": {
+    "PlayerInputBehavior": null,
+    "SpriteDrawable": [ "blueship" ],
+    "ColliderDrawable": null
+  },
+  "Enemy": {
+    "ExpiringBehavior": [ 15 ],
+    "SpriteDrawable": [ "redship4" ],
+    "ColliderDrawable": null
+  },
+  "PlayerLaser": {
+    "ExpiringBehavior": [ 3.0 ],
+    "MovementBehavior": [ 0.0, 0.5 ],
+    "SpriteDrawable": [ "blueLaserRay" ],
+    "ColliderDrawable": null
+  },
+  "Goblin": {
+    "AnimatedSpriteDrawable": [ "goblin_0", 4, true ]
+  },
+  "Background": {
+    "SpriteDrawable": [ "awhite" ]
+  }
+}

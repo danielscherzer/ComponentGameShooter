@@ -1,34 +1,36 @@
 using Core;
 using Core.Services;
 using Example;
-using OpenTK;
-using OpenTK.Input;
+using OpenTK.Windowing.Common;
+using OpenTK.Windowing.Desktop;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
 using System.Diagnostics;
 using System.Reflection;
 
 Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
 
-var window = new GameWindow(); // create the window
+var window = new GameWindow(GameWindowSettings.Default, new NativeWindowSettings { Profile = ContextProfile.Compatability}); // create the window
+
 var scene = new Scene(); // create the scene
-window.UpdateFrame += (s, e) => scene.Update();
+window.UpdateFrame += _ => scene.Update();
 scene.AddService<IGameTime>(new GameTime(window));
 scene.AddService<IInput>(new Input(window));
 var collisionDetection = new CollisionDetection();
 scene.AddService<ICollisionDetection>(collisionDetection);
 var graphic = new Graphic();
-window.RenderFrame += (s, e) => graphic.Draw();
-window.Resize += (s, e) => graphic.Resize(window.Width, window.Height);
+window.RenderFrame += _ => graphic.Draw();
+window.Resize += args => graphic.Resize(args.Width, args.Height);
 scene.AddService<IGraphic>(graphic);
-window.RenderFrame += (s, e) => window.SwapBuffers();
+window.RenderFrame += _ => window.SwapBuffers();
 
 Level1.Load(scene);
 //window.WindowState = WindowState.Fullscreen; // render the window in maximized mode
 window.Title = Assembly.GetExecutingAssembly().GetName().Name;
 
-window.KeyDown += (s, a) =>
+window.KeyDown += args =>
 {
-	if (Key.Escape == a.Key)
+	if (Keys.Escape == args.Key)
 	{
 		window.Close();
 	}

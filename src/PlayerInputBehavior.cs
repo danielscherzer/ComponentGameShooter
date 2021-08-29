@@ -2,6 +2,7 @@ using Core;
 using Core.Components;
 using Core.Services;
 using OpenTK;
+using OpenTK.Mathematics;
 
 namespace Example
 {

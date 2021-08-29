@@ -1,4 +1,5 @@
-using OpenTK;
+using OpenTK.Windowing.Common;
+using OpenTK.Windowing.Desktop;
 
 namespace Core.Services
 {
@@ -13,7 +14,7 @@ namespace Core.Services
 		public float Scale { get; set; } = 1f;
 		public float Time { get; private set; } = 0f;
 
-		private void GameWindow_UpdateFrame(object sender, FrameEventArgs e)
+		private void GameWindow_UpdateFrame(FrameEventArgs e)
 		{
 			FrameTime = (float)e.Time * Scale;
 			Time += FrameTime;

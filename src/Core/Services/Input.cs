@@ -1,5 +1,7 @@
-using OpenTK;
-using OpenTK.Input;
+using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
+using OpenTK.Windowing.Desktop;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
 using System.Collections.Generic;
 
@@ -15,7 +17,7 @@ namespace Core.Services
 		/// Initializes a new instance of the <see cref="Input"/> class.
 		/// </summary>
 		/// <param name="window">The window.</param>
-		public Input(INativeWindow window)
+		public Input(NativeWindow window)
 		{
 			window.KeyDown += Window_KeyDown;
 			window.KeyUp += Window_KeyUp;
@@ -23,17 +25,17 @@ namespace Core.Services
 			axes[Horizontal] = 0f;
 			// One could read key mappings from a file, registry, ...
 			// here we just hard code them
-			keyMappings.Add(Key.Space, Fire);
-			keyMappings.Add(Key.ControlLeft, Fire);
-			axisKeyMappings.Add(Key.Left, new Tuple<string, float>(Horizontal, -1f));
-			axisKeyMappings.Add(Key.Right, new Tuple<string, float>(Horizontal, 1f));
-			axisKeyMappings.Add(Key.Down, new Tuple<string, float>(Vertical, -1f));
-			axisKeyMappings.Add(Key.Up, new Tuple<string, float>(Vertical, 1f));
+			keyMappings.Add(Keys.Space, Fire);
+			keyMappings.Add(Keys.LeftControl, Fire);
+			axisKeyMappings.Add(Keys.Left, new Tuple<string, float>(Horizontal, -1f));
+			axisKeyMappings.Add(Keys.Right, new Tuple<string, float>(Horizontal, 1f));
+			axisKeyMappings.Add(Keys.Down, new Tuple<string, float>(Vertical, -1f));
+			axisKeyMappings.Add(Keys.Up, new Tuple<string, float>(Vertical, 1f));
 
-			axisKeyMappings.Add(Key.A, new Tuple<string, float>(Horizontal, -1f));
-			axisKeyMappings.Add(Key.D, new Tuple<string, float>(Horizontal, 1f));
-			axisKeyMappings.Add(Key.S, new Tuple<string, float>(Vertical, -1f));
-			axisKeyMappings.Add(Key.W, new Tuple<string, float>(Vertical, 1f));
+			axisKeyMappings.Add(Keys.A, new Tuple<string, float>(Horizontal, -1f));
+			axisKeyMappings.Add(Keys.D, new Tuple<string, float>(Horizontal, 1f));
+			axisKeyMappings.Add(Keys.S, new Tuple<string, float>(Vertical, -1f));
+			axisKeyMappings.Add(Keys.W, new Tuple<string, float>(Vertical, 1f));
 			// of course one would augment this class with pointing device input (mouse) etc.
 			// buttons could also be accessed via IsButtonDown
 			// an additional function that returns the current position of the pointing device would still be needed
@@ -83,12 +85,12 @@ namespace Core.Services
 		private const string Horizontal = nameof(Horizontal);
 		private const string Fire = nameof(Fire);
 
-		private readonly HashSet<string> pressedButtons = new HashSet<string>();
-		private readonly Dictionary<string, float> axes = new Dictionary<string, float>();
-		private readonly Dictionary<Key, Tuple<string, float>> axisKeyMappings = new Dictionary<Key, Tuple<string, float>>();
-		private readonly Dictionary<Key, string> keyMappings = new Dictionary<Key, string>();
+		private readonly HashSet<string> pressedButtons = new();
+		private readonly Dictionary<string, float> axes = new();
+		private readonly Dictionary<Keys, Tuple<string, float>> axisKeyMappings = new();
+		private readonly Dictionary<Keys, string> keyMappings = new();
 
-		private string ConvertToName(Key key)
+		private string ConvertToName(Keys key)
 		{
 			if (keyMappings.TryGetValue(key, out var name))
 			{
@@ -97,7 +99,7 @@ namespace Core.Services
 			return key.ToString();
 		}
 
-		private void UpdateAxes(Key key, float sign)
+		private void UpdateAxes(Keys key, float sign)
 		{
 			void UpdateAxes(string axis, float value)
 			{
@@ -109,14 +111,14 @@ namespace Core.Services
 			}
 		}
 
-		private void Window_KeyDown(object sender, KeyboardKeyEventArgs e)
+		private void Window_KeyDown(KeyboardKeyEventArgs e)
 		{
 			if (e.IsRepeat) return;
 			pressedButtons.Add(ConvertToName(e.Key));
 			UpdateAxes(e.Key, 1f);
 		}
 
-		private void Window_KeyUp(object sender, KeyboardKeyEventArgs e)
+		private void Window_KeyUp(KeyboardKeyEventArgs e)
 		{
 			if (e.IsRepeat) return;
 			pressedButtons.Remove(ConvertToName(e.Key));

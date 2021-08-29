@@ -3,6 +3,7 @@ using Core.Components;
 using Core.Services;
 using Newtonsoft.Json;
 using OpenTK;
+using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -43,36 +44,34 @@ namespace Example
 			//var converter = new JsonConverter[] { new ConvertRectangle() };
 			using (var stream = ResourceStreams.OpenStream("Scene", "prototypes"))
 			{
-				using (var reader = new StreamReader(stream))
+				using var reader = new StreamReader(stream);
+				var text = reader.ReadToEnd();
+				var prototypesParams = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, List<string>>>>(text);
+				foreach (var prototype in prototypesParams)
 				{
-					var text = reader.ReadToEnd();
-					var prototypesParams = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, List<string>>>>(text);
-					foreach (var prototype in prototypesParams)
+					var go = scene.CreateGameObject(prototype.Key);
+					go.Enabled = false;
+					prototypes[prototype.Key] = go;
+					foreach (var component in prototype.Value)
 					{
-						var go = scene.CreateGameObject(prototype.Key);
-						go.Enabled = false;
-						prototypes[prototype.Key] = go;
-						foreach (var component in prototype.Value)
+						var name = component.Key;
+						var type = types[name];
+						var ctor = type.GetConstructors().FirstOrDefault();
+						if (ctor is null) continue;
+						var parameterTypes = ctor.GetParameters();
+						if (typeof(IGameObject) != parameterTypes[0].ParameterType)
 						{
-							var name = component.Key;
-							var type = types[name];
-							var ctor = type.GetConstructors().FirstOrDefault();
-							if (ctor is null) continue;
-							var parameterTypes = ctor.GetParameters();
-							if (typeof(IGameObject) != parameterTypes[0].ParameterType)
-							{
-								throw new Exception($"First constructor for class {name} must have {nameof(IGameObject)} as first parameter to be deserialized.");
-							}
-							var parameterValues = new List<object> { go };
-							for (int i = 1; i < parameterTypes.Length; ++i)
-							{
-								var parameterType = parameterTypes[i].ParameterType;
-								var paramText = component.Value[i - 1];
-								var param = Convert.ChangeType(paramText, parameterType, CultureInfo.InvariantCulture);
-								parameterValues.Add(param);
-							}
-							Activator.CreateInstance(type, parameterValues.ToArray());
+							throw new Exception($"First constructor for class {name} must have {nameof(IGameObject)} as first parameter to be deserialized.");
 						}
+						var parameterValues = new List<object> { go };
+						for (int i = 1; i < parameterTypes.Length; ++i)
+						{
+							var parameterType = parameterTypes[i].ParameterType;
+							var paramText = component.Value[i - 1];
+							var param = Convert.ChangeType(paramText, parameterType, CultureInfo.InvariantCulture);
+							parameterValues.Add(param);
+						}
+						Activator.CreateInstance(type, parameterValues.ToArray());
 					}
 				}
 			}

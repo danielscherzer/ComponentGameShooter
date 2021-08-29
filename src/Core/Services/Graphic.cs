@@ -1,5 +1,6 @@
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -41,7 +42,7 @@ namespace Core.Services
 			GL.Clear(ClearBufferMask.ColorBufferBit); // clear the screen
 
 			GL.Enable(EnableCap.Blend);
-			GL.Color3(Color.White);
+			GL.Color4(Color4.White);
 			DrawSprites();
 			GL.Disable(EnableCap.Blend);
 			foreach (var spriteBatch in spriteBatches)
@@ -49,7 +50,7 @@ namespace Core.Services
 				spriteBatch.Value.Clear();
 			}
 
-			GL.Color3(Color.DarkSeaGreen);
+			GL.Color4(Color4.DarkSeaGreen);
 			DrawRectangles();
 			rectangles.Clear();
 		}
@@ -94,10 +95,10 @@ namespace Core.Services
 			return spriteSheet.CalcTexCoordsFromAnimationTime(normalizedAnimationTime);
 		}
 
-		private readonly Dictionary<string, Texture2d> textures = new Dictionary<string, Texture2d>();
-		private readonly Dictionary<string, List<Tuple<Rectangle, Rectangle>>> spriteBatches = new Dictionary<string, List<Tuple<Rectangle, Rectangle>>>();
-		private readonly Dictionary<string, SpriteSheet> spriteSheets = new Dictionary<string, SpriteSheet>();
-		private readonly List<Rectangle> rectangles = new List<Rectangle>();
+		private readonly Dictionary<string, Texture2d> textures = new();
+		private readonly Dictionary<string, List<Tuple<Rectangle, Rectangle>>> spriteBatches = new();
+		private readonly Dictionary<string, SpriteSheet> spriteSheets = new();
+		private readonly List<Rectangle> rectangles = new();
 
 		private void DrawRectangles()
 		{

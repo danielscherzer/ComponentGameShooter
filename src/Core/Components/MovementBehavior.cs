@@ -22,7 +22,7 @@ namespace Core.Components
 
 		public override void Update()
 		{
-			GameObject.Rectangle = GameObject.Rectangle.Translate(gameTime.FrameTime * Velocity);
+			GameObject.Rectangle = GameObject.Rectangle.Translated(gameTime.FrameTime * Velocity);
 		}
 
 		private readonly IGameTime gameTime;

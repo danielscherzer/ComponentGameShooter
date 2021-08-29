@@ -85,7 +85,7 @@ namespace Core.Services
 				uint id = character - spriteSheet.FirstASCII;
 				var texCoords = spriteSheet.CalcTexCoordsFromId(id);
 				batch.Add(new Tuple<Rectangle, Rectangle>(rect, texCoords));
-				rect = rect.Translate(new Vector2(rect.Size.X, 0f));
+				rect = rect.Translated(new Vector2(rect.Size.X, 0f));
 			}
 		}
 

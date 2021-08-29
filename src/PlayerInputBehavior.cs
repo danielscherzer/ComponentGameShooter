@@ -26,7 +26,7 @@ namespace Example
 			var axisX = input.GetAxis("Horizontal");
 			var axisY = input.GetAxis("Vertical");
 			var velocity = 0.6f * new Vector2(axisX, axisY);
-			GameObject.Rectangle = GameObject.Rectangle.Translate(gameTime.FrameTime * velocity);
+			GameObject.Rectangle = GameObject.Rectangle.Translated(gameTime.FrameTime * velocity);
 		}
 	}
 }

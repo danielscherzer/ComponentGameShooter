@@ -17,7 +17,7 @@ namespace Core.Components
 
 		public override void Update()
 		{
-			var texCoords = new Rectangle(0f, 0f, 1f, 1f);
+			var texCoords =  Rectangle.FromMinSize(0f, 0f, 1f, 1f);
 			graphic.DrawSprite(textureName, GameObject.Rectangle, texCoords);
 		}
 	}

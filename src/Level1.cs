@@ -77,7 +77,7 @@ namespace Example
 			}
 
 			var score = prototypes["Score"].Clone();
-			score.Rectangle = new Rectangle(-0.9f, -0.9f, 0.05f, 0.05f);
+			score.Rectangle = Rectangle.FromMinSize(-0.9f, -0.9f, 0.05f, 0.05f);
 			var textDrawable = score.GetComponents<TextDrawable>().First();
 			var points = 0;
 			AddPoints(0);
@@ -196,7 +196,7 @@ namespace Example
 				var sizeX = (float)reader.ReadAsDouble();
 				var sizeY = (float)reader.ReadAsDouble();
 				reader.Read();
-				return new Rectangle(minX, minY, sizeX, sizeY);
+				return Rectangle.FromMinSize(minX, minY, sizeX, sizeY);
 			}
 
 			public override void WriteJson(JsonWriter writer, Rectangle value, JsonSerializer serializer)

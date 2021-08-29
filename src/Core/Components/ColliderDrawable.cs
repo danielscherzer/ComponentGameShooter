@@ -14,7 +14,7 @@ namespace Core.Components
 
 		public override void Update()
 		{
-			graphic.DrawRectangle(GameObject.Rectangle);
+			graphic.DrawRectangle(GameObject.Bounds);
 		}
 	}
 }

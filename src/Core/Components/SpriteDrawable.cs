@@ -1,4 +1,5 @@
 using Core.Services;
+using Zenseless.OpenTK;
 
 namespace Core.Components
 {
@@ -17,8 +18,8 @@ namespace Core.Components
 
 		public override void Update()
 		{
-			var texCoords =  Rectangle.FromMinSize(0f, 0f, 1f, 1f);
-			graphic.DrawSprite(textureName, GameObject.Rectangle, texCoords);
+			var texCoords = Box2Extensions.CreateFromMinSize(0f, 0f, 1f, 1f);
+			graphic.DrawSprite(textureName, GameObject.Bounds, texCoords);
 		}
 	}
 }

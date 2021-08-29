@@ -25,7 +25,7 @@ namespace Core.Components
 
 		public override void Update()
 		{
-			graphic.DrawText(textureName, GameObject.Rectangle, Text);
+			graphic.DrawText(textureName, GameObject.Bounds, Text);
 		}
 	}
 }

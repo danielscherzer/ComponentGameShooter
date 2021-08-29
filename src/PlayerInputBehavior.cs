@@ -1,7 +1,6 @@
 using Core;
 using Core.Components;
 using Core.Services;
-using OpenTK;
 using OpenTK.Mathematics;
 
 namespace Example
@@ -26,7 +25,7 @@ namespace Example
 			var axisX = input.GetAxis("Horizontal");
 			var axisY = input.GetAxis("Vertical");
 			var velocity = 0.6f * new Vector2(axisX, axisY);
-			GameObject.Rectangle = GameObject.Rectangle.Translated(gameTime.FrameTime * velocity);
+			GameObject.Bounds = GameObject.Bounds.Translated(gameTime.FrameTime * velocity);
 		}
 	}
 }

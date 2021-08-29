@@ -1,5 +1,4 @@
 using Core.Services;
-using OpenTK;
 using OpenTK.Mathematics;
 
 namespace Core.Components
@@ -22,7 +21,7 @@ namespace Core.Components
 
 		public override void Update()
 		{
-			GameObject.Rectangle = GameObject.Rectangle.Translated(gameTime.FrameTime * Velocity);
+			GameObject.Bounds = GameObject.Bounds.Translated(gameTime.FrameTime * Velocity);
 		}
 
 		private readonly IGameTime gameTime;

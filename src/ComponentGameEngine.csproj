@@ -21,7 +21,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Zenseless.OpenTK" Version="0.1.14" />
+    <PackageReference Include="Zenseless.OpenTK" Version="0.1.16" />
     <PackageReference Include="Zenseless.Resources" Version="0.1.4" />
   </ItemGroup>
 

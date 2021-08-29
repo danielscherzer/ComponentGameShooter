@@ -1,5 +1,7 @@
+using OpenTK.Mathematics;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Zenseless.OpenTK;
 
 namespace Core
 {
@@ -17,7 +19,7 @@ namespace Core
 
 		public bool Enabled { get; set; } = true;
 		public string Name { get; }
-		public Rectangle Rectangle { get; set; } = Rectangle.FromCenterSize(0.0f, 0.0f, 1f, 1f);
+		public Box2 Bounds { get; set; } = Box2Extensions.CreateFromCenterSize(0.0f, 0.0f, 1f, 1f);
 		public IScene Scene { get; }
 
 		public void AddComponent(IComponent component)
@@ -28,7 +30,7 @@ namespace Core
 		public IGameObject Clone()
 		{
 			var go = Scene.CreateGameObject(Name);
-			go.Rectangle = Rectangle;
+			go.Bounds = Bounds;
 			foreach (var component in components)
 			{
 				component.CloneTo(go);

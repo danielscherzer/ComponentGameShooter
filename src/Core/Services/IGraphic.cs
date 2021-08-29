@@ -1,10 +1,12 @@
+using OpenTK.Mathematics;
+
 namespace Core.Services
 {
 	public interface IGraphic
 	{
-		void DrawRectangle(Rectangle rectangle);
-		void DrawSprite(string textureName, Rectangle rectangle, Rectangle texCoords);
-		void DrawText(string textureName, Rectangle firstCharacterRectangle, string text);
-		Rectangle TexCoordsForAnimation(string textureName, float normalizedAnimationTime);
+		void DrawRectangle(Box2 rectangle);
+		void DrawSprite(string textureName, Box2 rectangle, Box2 texCoords);
+		void DrawText(string textureName, Box2 firstCharacterRectangle, string text);
+		Box2 TexCoordsForAnimation(string textureName, float normalizedAnimationTime);
 	}
 }

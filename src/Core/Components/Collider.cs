@@ -1,5 +1,6 @@
 using Core.Services;
 using System;
+using Zenseless.OpenTK;
 
 namespace Core.Components
 {
@@ -22,7 +23,7 @@ namespace Core.Components
 
 		public bool Intersects(ICollider other)
 		{
-			return GameObject.Rectangle.Intersects(other.GameObject.Rectangle);
+			return GameObject.Bounds.Intersects(other.GameObject.Bounds);
 		}
 
 		public void HandleCollision(ICollider other)

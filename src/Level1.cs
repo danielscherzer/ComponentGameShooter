@@ -2,7 +2,6 @@ using Core;
 using Core.Components;
 using Core.Services;
 using Newtonsoft.Json;
-using OpenTK;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
@@ -10,11 +9,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Zenseless.OpenTK;
 
 namespace Example
 {
-	using Rectangle = Core.Rectangle;
-
 	internal class Level1
 	{
 		internal static void Load(IScene scene)
@@ -77,7 +75,7 @@ namespace Example
 			}
 
 			var score = prototypes["Score"].Clone();
-			score.Rectangle = Rectangle.FromMinSize(-0.9f, -0.9f, 0.05f, 0.05f);
+			score.Bounds = Box2Extensions.CreateFromMinSize(-0.9f, -0.9f, 0.05f, 0.05f);
 			var textDrawable = score.GetComponents<TextDrawable>().First();
 			var points = 0;
 			AddPoints(0);
@@ -87,16 +85,16 @@ namespace Example
 				textDrawable.Text = $"points={points}";
 			}
 
-			void CreateExplosion(Rectangle rectangle)
+			void CreateExplosion(Box2 rectangle)
 			{
 				var go = prototypes["Explosion"].Clone();
-				go.Rectangle = rectangle;
+				go.Bounds = rectangle;
 			}
 
 			void CreatePlayer(float centerX, float centerY, float width)
 			{
 				var gameObject = prototypes["Player"].Clone();
-				gameObject.Rectangle = Rectangle.FromCenterSize(centerX, centerY, width, 1.2f * width);
+				gameObject.Bounds = Box2Extensions.CreateFromCenterSize(centerX, centerY, width, 1.2f * width);
 				var playerInput = gameObject.GetComponents<PlayerInputBehavior>().First();
 
 				IGameObject CreatePlayerLaser()
@@ -112,15 +110,15 @@ namespace Example
 					{
 						var laserHeight = 0.08f;
 						var laser = CreatePlayerLaser();
-						laser.Rectangle = Rectangle.FromCenterSize(x, go.Rectangle.Max.Y + 0.25f * laserHeight
+						laser.Bounds = Box2Extensions.CreateFromCenterSize(x, go.Bounds.Max.Y + 0.25f * laserHeight
 							, 0.6f * laserHeight, laserHeight);
 					}
 
 					var result = playerInput.Fire;
 					if (result)
 					{
-						PositionLaser(go.Rectangle.Center.X - 0.3f * go.Rectangle.Size.X);
-						PositionLaser(go.Rectangle.Center.X + 0.3f * go.Rectangle.Size.X);
+						PositionLaser(go.Bounds.Center.X - 0.3f * go.Bounds.Size.X);
+						PositionLaser(go.Bounds.Center.X + 0.3f * go.Bounds.Size.X);
 						return true;
 					}
 					return false;
@@ -130,7 +128,7 @@ namespace Example
 				void HandleCollision(IGameObject other)
 				{
 					gameObject.Scene.Remove(gameObject);
-					CreateExplosion(gameObject.Rectangle);
+					CreateExplosion(gameObject.Bounds);
 				}
 				new Collider(gameObject, HandleCollision, GameLayer.Player);
 			}
@@ -140,14 +138,14 @@ namespace Example
 				IGameObject CreateEnemy(float centerX, float centerY, float width, Vector2 velocity)
 				{
 					var gameObject = prototypes["Enemy"].Clone();
-					gameObject.Rectangle = Rectangle.FromCenterSize(centerX, centerY, width, 1.2f * width);
+					gameObject.Bounds = Box2Extensions.CreateFromCenterSize(centerX, centerY, width, 1.2f * width);
 
 					bool SpawnLaser(IGameObject enemy)
 					{
 						var laserHeight = 0.04f;
 						var laser = prototypes["EnemyLaser"].Clone();
 						new Collider(laser, (collider) => scene.Remove(laser), GameLayer.EnemyLaser);
-						laser.Rectangle = Rectangle.FromCenterSize(enemy.Rectangle.Center.X, enemy.Rectangle.Min.Y - 0.5f * laserHeight, 0.6f * laserHeight, laserHeight);
+						laser.Bounds = Box2Extensions.CreateFromCenterSize(enemy.Bounds.Center.X, enemy.Bounds.Min.Y - 0.5f * laserHeight, 0.6f * laserHeight, laserHeight);
 						return true;
 					}
 					new PeriodicBehavior(gameObject, 1.5f, SpawnLaser, 3f);
@@ -158,7 +156,7 @@ namespace Example
 						if (!gameObject.Enabled) return;
 						addPoints(1);
 						gameObject.Scene.Remove(gameObject);
-						CreateExplosion(gameObject.Rectangle);
+						CreateExplosion(gameObject.Bounds);
 					}
 
 					new Collider(gameObject, HandleCollision, GameLayer.Enemies);
@@ -187,19 +185,19 @@ namespace Example
 			prototypes["Background"].Clone();
 		}
 
-		private class ConvertRectangle : JsonConverter<Rectangle>
+		private class ConvertRectangle : JsonConverter<Box2>
 		{
-			public override Rectangle ReadJson(JsonReader reader, Type objectType, Rectangle existingValue, bool hasExistingValue, JsonSerializer serializer)
+			public override Box2 ReadJson(JsonReader reader, Type objectType, Box2 existingValue, bool hasExistingValue, JsonSerializer serializer)
 			{
 				var minX = (float)reader.ReadAsDouble();
 				var minY = (float)reader.ReadAsDouble();
 				var sizeX = (float)reader.ReadAsDouble();
 				var sizeY = (float)reader.ReadAsDouble();
 				reader.Read();
-				return Rectangle.FromMinSize(minX, minY, sizeX, sizeY);
+				return Box2Extensions.CreateFromMinSize(minX, minY, sizeX, sizeY);
 			}
 
-			public override void WriteJson(JsonWriter writer, Rectangle value, JsonSerializer serializer)
+			public override void WriteJson(JsonWriter writer, Box2 value, JsonSerializer serializer)
 			{
 				writer.WriteStartArray();
 				writer.WriteValue(value.Min.X);

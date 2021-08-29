@@ -10,7 +10,7 @@ using System.Reflection;
 
 Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
 
-var window = new GameWindow(GameWindowSettings.Default, new NativeWindowSettings { Profile = ContextProfile.Compatability}); // create the window
+var window = new GameWindow(GameWindowSettings.Default, new NativeWindowSettings { Profile = ContextProfile.Compatability }); // create the window
 
 var scene = new Scene(); // create the scene
 window.UpdateFrame += _ => scene.Update();

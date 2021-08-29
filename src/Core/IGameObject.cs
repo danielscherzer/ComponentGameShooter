@@ -1,3 +1,4 @@
+using OpenTK.Mathematics;
 using System.Collections.Generic;
 
 namespace Core
@@ -6,7 +7,7 @@ namespace Core
 	{
 		bool Enabled { get; set; }
 		string Name { get; }
-		Rectangle Rectangle { get; set; }
+		Box2 Bounds { get; set; }
 		IScene Scene { get; }
 		void AddComponent(IComponent component);
 		IGameObject Clone();

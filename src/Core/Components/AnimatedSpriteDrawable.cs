@@ -28,7 +28,7 @@ namespace Core.Components
 			normalizedAnimationTime += time.FrameTime / animationLength;
 			normalizedAnimationTime = looped ? normalizedAnimationTime % 1f : MathF.Min(normalizedAnimationTime, 1f);
 			var texCoords = graphic.TexCoordsForAnimation(textureName, normalizedAnimationTime);
-			graphic.DrawSprite(textureName, GameObject.Rectangle, texCoords);
+			graphic.DrawSprite(textureName, GameObject.Bounds, texCoords);
 		}
 	}
 }

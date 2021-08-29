@@ -1,4 +1,6 @@
+using OpenTK.Mathematics;
 using System;
+using Zenseless.OpenTK;
 
 namespace Core
 {
@@ -20,7 +22,7 @@ namespace Core
 		public uint SpritesPerRow { get; set; }
 		public uint FirstASCII { get; set; }
 
-		public Rectangle CalcTexCoordsFromId(uint id)
+		public Box2 CalcTexCoordsFromId(uint id)
 		{
 			var spriteId = id;
 			uint row = spriteId / SpritesPerRow;
@@ -31,10 +33,10 @@ namespace Core
 			float width = 1f / SpritesPerRow;
 			float height = 1f / SpritesPerColumn;
 
-			return Rectangle.FromCenterSize(centerX, centerY, width, height);
+			return Box2Extensions.CreateFromCenterSize(centerX, centerY, width, height);
 		}
 
-		public Rectangle CalcTexCoordsFromAnimationTime(float normalizedAnimationTime)
+		public Box2 CalcTexCoordsFromAnimationTime(float normalizedAnimationTime)
 		{
 			var frameCount = SpritesPerRow * SpritesPerColumn - 1;
 			var frame = (uint)MathF.Round(normalizedAnimationTime * frameCount);

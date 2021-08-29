@@ -1,4 +1,3 @@
-using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using System;
@@ -9,7 +8,6 @@ using System.Xml.Serialization;
 
 namespace Core.Services
 {
-	using Rectangle = Core.Rectangle;
 	/// <summary>
 	/// Class that handles all the actual drawing using OpenGL.
 	/// </summary>
@@ -22,7 +20,7 @@ namespace Core.Services
 			{
 				var shortName = Path.GetFileNameWithoutExtension(name);
 				textures.Add(shortName, new Texture2d(stream));
-				spriteBatches.Add(shortName, new List<Tuple<Rectangle, Rectangle>>());
+				spriteBatches.Add(shortName, new List<Tuple<Box2, Box2>>());
 			}
 			ResourceStreams.IterateOverFiles("Images", LoadSprite);
 			var serializer = new XmlSerializer(typeof(SpriteSheet));
@@ -64,17 +62,17 @@ namespace Core.Services
 			GL.LoadMatrix(ref windowAspectMatrix);
 		}
 
-		public void DrawRectangle(Rectangle rectangle)
+		public void DrawRectangle(Box2 rectangle)
 		{
 			rectangles.Add(rectangle);
 		}
 
-		public void DrawSprite(string textureName, Rectangle rectangle, Rectangle texCoords)
+		public void DrawSprite(string textureName, Box2 rectangle, Box2 texCoords)
 		{
-			spriteBatches[textureName].Add(new Tuple<Rectangle, Rectangle>(rectangle, texCoords));
+			spriteBatches[textureName].Add(new Tuple<Box2, Box2>(rectangle, texCoords));
 		}
 
-		public void DrawText(string textureName, Rectangle firstCharacterRectangle, string text)
+		public void DrawText(string textureName, Box2 firstCharacterRectangle, string text)
 		{
 			var spriteSheet = spriteSheets[textureName];
 			var batch = spriteBatches[textureName];
@@ -84,21 +82,21 @@ namespace Core.Services
 			{
 				uint id = character - spriteSheet.FirstASCII;
 				var texCoords = spriteSheet.CalcTexCoordsFromId(id);
-				batch.Add(new Tuple<Rectangle, Rectangle>(rect, texCoords));
+				batch.Add(new Tuple<Box2, Box2>(rect, texCoords));
 				rect = rect.Translated(new Vector2(rect.Size.X, 0f));
 			}
 		}
 
-		public Rectangle TexCoordsForAnimation(string textureName, float normalizedAnimationTime)
+		public Box2 TexCoordsForAnimation(string textureName, float normalizedAnimationTime)
 		{
 			var spriteSheet = spriteSheets[textureName];
 			return spriteSheet.CalcTexCoordsFromAnimationTime(normalizedAnimationTime);
 		}
 
 		private readonly Dictionary<string, Texture2d> textures = new();
-		private readonly Dictionary<string, List<Tuple<Rectangle, Rectangle>>> spriteBatches = new();
+		private readonly Dictionary<string, List<Tuple<Box2, Box2>>> spriteBatches = new();
 		private readonly Dictionary<string, SpriteSheet> spriteSheets = new();
-		private readonly List<Rectangle> rectangles = new();
+		private readonly List<Box2> rectangles = new();
 
 		private void DrawRectangles()
 		{
@@ -128,7 +126,7 @@ namespace Core.Services
 			GL.Disable(EnableCap.Texture2D);
 		}
 
-		private static void DrawTextured(Rectangle rectangle, Rectangle texCoords)
+		private static void DrawTextured(Box2 rectangle, Box2 texCoords)
 		{
 			GL.Begin(PrimitiveType.Quads);
 			GL.TexCoord2(texCoords.Min); GL.Vertex2(rectangle.Min);

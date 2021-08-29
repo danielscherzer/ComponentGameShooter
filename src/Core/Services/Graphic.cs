@@ -1,6 +1,5 @@
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -20,12 +19,12 @@ namespace Core.Services
 			var textureDir = new EmbeddedResourceDirectory(nameof(Example) + ".Content.Textures");
 
 			// load textures
-			foreach(var resourceName in textureDir.EnumerateResources())
+			foreach (var resourceName in textureDir.EnumerateResources())
 			{
 				using var stream = textureDir.Open(resourceName);
 				var shortName = Path.GetFileNameWithoutExtension(resourceName);
-				textures.Add(shortName, Texture2DLoader.Load(stream));
-				spriteBatches.Add(shortName, new List<Tuple<Box2, Box2>>());
+				_textures.Add(shortName, Texture2DLoader.Load(stream));
+				_spriteBatches.Add(shortName, new List<(Box2, Box2)>());
 			}
 
 			var spriteSheetDir = new EmbeddedResourceDirectory(nameof(Example) + ".Content.SpriteSheets");
@@ -36,7 +35,7 @@ namespace Core.Services
 				using var stream = spriteSheetDir.Open(resourceName);
 				var spriteSheet = serializer.Deserialize(stream) as SpriteSheet;
 				var shortName = Path.GetFileNameWithoutExtension(resourceName);
-				spriteSheets.Add(shortName, spriteSheet);
+				_spriteSheets.Add(shortName, spriteSheet);
 			}
 			GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 		}
@@ -49,7 +48,7 @@ namespace Core.Services
 			GL.Color4(Color4.White);
 			DrawSprites();
 			GL.Disable(EnableCap.Blend);
-			foreach (var spriteBatch in spriteBatches)
+			foreach (var spriteBatch in _spriteBatches)
 			{
 				spriteBatch.Value.Clear();
 			}
@@ -75,33 +74,33 @@ namespace Core.Services
 
 		public void DrawSprite(string textureName, Box2 rectangle, Box2 texCoords)
 		{
-			spriteBatches[textureName].Add(new Tuple<Box2, Box2>(rectangle, texCoords));
+			_spriteBatches[textureName].Add((rectangle, texCoords));
 		}
 
 		public void DrawText(string textureName, Box2 firstCharacterRectangle, string text)
 		{
-			var spriteSheet = spriteSheets[textureName];
-			var batch = spriteBatches[textureName];
+			var spriteSheet = _spriteSheets[textureName];
+			var batch = _spriteBatches[textureName];
 			var rect = firstCharacterRectangle;
 			byte[] asciiBytes = Encoding.ASCII.GetBytes(text);
 			foreach (var character in asciiBytes)
 			{
 				uint id = character - spriteSheet.FirstASCII;
 				var texCoords = spriteSheet.CalcTexCoordsFromId(id);
-				batch.Add(new Tuple<Box2, Box2>(rect, texCoords));
+				batch.Add((rect, texCoords));
 				rect = rect.Translated(new Vector2(rect.Size.X, 0f));
 			}
 		}
 
 		public Box2 TexCoordsForAnimation(string textureName, float normalizedAnimationTime)
 		{
-			var spriteSheet = spriteSheets[textureName];
+			var spriteSheet = _spriteSheets[textureName];
 			return spriteSheet.CalcTexCoordsFromAnimationTime(normalizedAnimationTime);
 		}
 
-		private readonly Dictionary<string, Texture2D> textures = new();
-		private readonly Dictionary<string, List<Tuple<Box2, Box2>>> spriteBatches = new();
-		private readonly Dictionary<string, SpriteSheet> spriteSheets = new();
+		private readonly Dictionary<string, Texture2D> _textures = new();
+		private readonly Dictionary<string, List<(Box2 bounds, Box2 texCoord)>> _spriteBatches = new();
+		private readonly Dictionary<string, SpriteSheet> _spriteSheets = new();
 		private readonly List<Box2> rectangles = new();
 
 		private void DrawRectangles()
@@ -120,25 +119,25 @@ namespace Core.Services
 		private void DrawSprites()
 		{
 			GL.Enable(EnableCap.Texture2D); //activate texturing
-			foreach (var spriteBatch in spriteBatches)
+			foreach (var spriteBatch in _spriteBatches)
 			{
-				var texture = textures[spriteBatch.Key];
-				GL.BindTextureUnit(0, texture.Handle);
-				foreach (var sprite in spriteBatch.Value)
+				var texture = _textures[spriteBatch.Key];
+				GL.BindTexture(TextureTarget.Texture2D, texture.Handle);
+				foreach ((Box2 bounds, Box2 texCoord) in spriteBatch.Value)
 				{
-					DrawTextured(sprite.Item1, sprite.Item2);
+					DrawTextured(bounds, texCoord);
 				}
 			}
 			GL.Disable(EnableCap.Texture2D);
 		}
 
-		private static void DrawTextured(Box2 rectangle, Box2 texCoords)
+		private static void DrawTextured(Box2 bounds, Box2 texCoords)
 		{
 			GL.Begin(PrimitiveType.Quads);
-			GL.TexCoord2(texCoords.Min); GL.Vertex2(rectangle.Min);
-			GL.TexCoord2(texCoords.Max.X, texCoords.Min.Y); GL.Vertex2(rectangle.Max.X, rectangle.Min.Y);
-			GL.TexCoord2(texCoords.Max); GL.Vertex2(rectangle.Max);
-			GL.TexCoord2(texCoords.Min.X, texCoords.Max.Y); GL.Vertex2(rectangle.Min.X, rectangle.Max.Y);
+			GL.TexCoord2(texCoords.Min); GL.Vertex2(bounds.Min);
+			GL.TexCoord2(texCoords.Max.X, texCoords.Min.Y); GL.Vertex2(bounds.Max.X, bounds.Min.Y);
+			GL.TexCoord2(texCoords.Max); GL.Vertex2(bounds.Max);
+			GL.TexCoord2(texCoords.Min.X, texCoords.Max.Y); GL.Vertex2(bounds.Min.X, bounds.Max.Y);
 			GL.End();
 		}
 	}

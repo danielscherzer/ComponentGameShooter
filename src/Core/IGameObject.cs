@@ -1,9 +1,10 @@
 using OpenTK.Mathematics;
+using System;
 using System.Collections.Generic;
 
 namespace Core
 {
-	public interface IGameObject : IUpdate
+	public interface IGameObject : IUpdate, IDisposable
 	{
 		bool Enabled { get; set; }
 		string Name { get; }

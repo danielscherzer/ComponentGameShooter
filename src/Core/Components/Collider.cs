@@ -4,20 +4,21 @@ using Zenseless.OpenTK;
 
 namespace Core.Components
 {
-	internal class Collider : Component, ICollider
+	internal class Collider : Component, ICollider, IDisposable
 	{
 		private readonly ICollisionDetection collisionDetection;
 
-		public Collider(IGameObject gameObject, Action<IGameObject> handleCollision, string layer) : base(gameObject)
+		public Collider(IGameObject gameObject, Action<IGameObject> collisionResponse, string layer) : base(gameObject)
 		{
-			this.handleCollision = handleCollision ?? throw new ArgumentNullException(nameof(handleCollision));
+			this._collisionResponse = collisionResponse ?? throw new ArgumentNullException(nameof(collisionResponse));
 			collisionDetection = Helper.CheckServiceExists(gameObject.Scene.GetService<ICollisionDetection>());
 			LayerName = layer;
+			collisionDetection.Add(LayerName, this);
 		}
 
-		public override IComponent CloneTo(IGameObject gameObject) => new Collider(gameObject, handleCollision, LayerName);
+		public override IComponent CloneTo(IGameObject gameObject) => new Collider(gameObject, _collisionResponse, LayerName);
 
-		private readonly Action<IGameObject> handleCollision;
+		private readonly Action<IGameObject> _collisionResponse;
 
 		private string LayerName { get; }
 
@@ -26,14 +27,15 @@ namespace Core.Components
 			return GameObject.Bounds.Intersects(other.GameObject.Bounds);
 		}
 
-		public void HandleCollision(ICollider other)
+		public void CollisionResponse(ICollider other)
 		{
-			handleCollision(other.GameObject);
+			_collisionResponse(other.GameObject);
 		}
 
 		public override void Update()
 		{
-			collisionDetection.Add(LayerName, this);
 		}
+
+		public void Dispose() => collisionDetection.Remove(LayerName, this);
 	}
 }

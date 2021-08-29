@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Core.Services
 {
@@ -9,18 +10,19 @@ namespace Core.Services
 	/// </summary>
 	internal class CollisionDetection : IUpdate, ICollisionDetection
 	{
-		public void Add(string layer, ICollider collider)
+		public bool Add(string layer, ICollider collider)
 		{
-			layerColliders[layer].Add(collider);
+			return _layerColliders[layer].Add(collider);
 		}
 
 		public bool AddLayer(string name)
 		{
-			if (!layerLayerCollisions.ContainsKey(name))
+			if (!_layerLayerCollisions.ContainsKey(name))
 			{
 				var collidingLayers = new HashSet<string>();
-				layerLayerCollisions.Add(name, collidingLayers);
-				layerColliders[name] = new HashSet<ICollider>();
+				_layerLayerCollisions.Add(name, collidingLayers);
+				_layerColliders[name] = new HashSet<ICollider>();
+				Trace.WriteLine($"Add Collision layer: {name}");
 				return true;
 			}
 			return false;
@@ -28,11 +30,11 @@ namespace Core.Services
 
 		public bool AddLayerToLayerCollision(string layer1, string layer2)
 		{
-			if (!layerLayerCollisions.TryGetValue(layer1, out var collidingLayers))
+			if (!_layerLayerCollisions.TryGetValue(layer1, out var collidingLayers))
 			{
 				throw new ArgumentException($"Layer {layer1} not found");
 			}
-			if (!layerLayerCollisions.ContainsKey(layer2))
+			if (!_layerLayerCollisions.ContainsKey(layer2))
 			{
 				throw new ArgumentException($"Layer {layer2} not found");
 			}
@@ -41,21 +43,22 @@ namespace Core.Services
 
 		public void Update()
 		{
-			foreach (var layer1 in layerLayerCollisions)
+			foreach (var layer1 in _layerLayerCollisions)
 			{
 				foreach (var layer2 in layer1.Value)
 				{
-					HandleCollisions(layerColliders[layer1.Key], layerColliders[layer2]);
+					HandleCollisions(_layerColliders[layer1.Key], _layerColliders[layer2]);
 				}
 			}
-
-			foreach (var layer in layerColliders.Values)
-			{
-				layer.Clear();
-			}
+			Trace.WriteLine($"Collider count:{_layerColliders.Values.Sum(colls => colls.Count)}");
 		}
 
-		private void HandleCollisions(IEnumerable<ICollider> layer1Colliders, IEnumerable<ICollider> layer2Colliders)
+		public bool Remove(string layer, ICollider collider)
+		{
+			return _layerColliders[layer].Remove(collider);
+		}
+
+		private static void HandleCollisions(IEnumerable<ICollider> layer1Colliders, IEnumerable<ICollider> layer2Colliders)
 		{
 			foreach (var collider1 in layer1Colliders)
 			{
@@ -65,14 +68,14 @@ namespace Core.Services
 					if (collider1.Intersects(collider2))
 					{
 						Trace.WriteLine($"collision between {collider1.GameObject.Name} and {collider2.GameObject.Name}");
-						collider1.HandleCollision(collider2);
-						collider2.HandleCollision(collider1);
+						collider1.CollisionResponse(collider2);
+						collider2.CollisionResponse(collider1);
 					}
 				}
 			}
 		}
 
-		private readonly Dictionary<string, HashSet<ICollider>> layerColliders = new Dictionary<string, HashSet<ICollider>>();
-		private readonly Dictionary<string, HashSet<string>> layerLayerCollisions = new Dictionary<string, HashSet<string>>();
+		private readonly Dictionary<string, HashSet<ICollider>> _layerColliders = new();
+		private readonly Dictionary<string, HashSet<string>> _layerLayerCollisions = new();
 	}
 }

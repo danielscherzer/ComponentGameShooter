@@ -2,7 +2,7 @@ namespace Core.Services
 {
 	internal interface ICollider : IComponent
 	{
-		void HandleCollision(ICollider other);
+		void CollisionResponse(ICollider other);
 		bool Intersects(ICollider other);
 	}
 }

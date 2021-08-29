@@ -1,7 +1,9 @@
 using OpenTK.Mathematics;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Zenseless.OpenTK;
+using Zenseless.Patterns;
 
 namespace Core
 {
@@ -9,7 +11,7 @@ namespace Core
 	/// Base class for all game objects.
 	/// </summary>
 	[DebuggerDisplay("{Name}")]
-	public class GameObject : IGameObject
+	public class GameObject : Disposable, IGameObject
 	{
 		public GameObject(IScene scene, string name = "")
 		{
@@ -24,14 +26,14 @@ namespace Core
 
 		public void AddComponent(IComponent component)
 		{
-			components.Add(component);
+			_components.Add(component);
 		}
 
 		public IGameObject Clone()
 		{
 			var go = Scene.CreateGameObject(Name);
 			go.Bounds = Bounds;
-			foreach (var component in components)
+			foreach (var component in _components)
 			{
 				component.CloneTo(go);
 			}
@@ -40,22 +42,28 @@ namespace Core
 
 		public IEnumerable<T> GetComponents<T>() where T : class, IComponent
 		{
-			foreach (var component in components)
+			foreach (var component in _components.OfType<T>())
 			{
-				if (!(component is T typed)) continue;
-				yield return typed;
+				yield return component;
 			}
 		}
 
 		public void Update()
 		{
 			if (!Enabled) return;
-			foreach (var component in components)
+			foreach (var component in _components)
 			{
 				component.Update();
 			}
 		}
 
-		private readonly List<IComponent> components = new List<IComponent>();
+		protected override void DisposeResources()
+		{
+			Enabled = false;
+			DisposeAllFields(this);
+			//_components.Clear();
+		}
+
+		private readonly List<IComponent> _components = new();
 	}
 }

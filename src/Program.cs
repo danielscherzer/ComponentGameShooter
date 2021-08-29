@@ -20,7 +20,7 @@ var collisionDetection = new CollisionDetection();
 scene.AddService<ICollisionDetection>(collisionDetection);
 var graphic = new Graphic();
 window.RenderFrame += _ => graphic.Draw();
-window.Resize += args => graphic.Resize(args.Width, args.Height);
+window.Resize += args => global::Core.Services.Graphic.Resize(args.Width, args.Height);
 scene.AddService<IGraphic>(graphic);
 window.RenderFrame += _ => window.SwapBuffers();
 

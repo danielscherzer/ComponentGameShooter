@@ -1,6 +1,7 @@
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Xml.Serialization;
@@ -33,7 +34,11 @@ namespace Core.Services
 			foreach (var resourceName in spriteSheetDir.EnumerateResources())
 			{
 				using var stream = spriteSheetDir.Open(resourceName);
-				var spriteSheet = serializer.Deserialize(stream) as SpriteSheet;
+				if (serializer.Deserialize(stream) is not SpriteSheet spriteSheet)
+				{
+					Trace.WriteLine($"Could not deserialize sprite sheet {resourceName}");
+					continue;
+				}
 				var shortName = Path.GetFileNameWithoutExtension(resourceName);
 				_spriteSheets.Add(shortName, spriteSheet);
 			}
@@ -58,7 +63,7 @@ namespace Core.Services
 			rectangles.Clear();
 		}
 
-		internal void Resize(int width, int height)
+		internal static void Resize(int width, int height)
 		{
 			GL.Viewport(0, 0, width, height); // tell OpenGL to use the whole window for drawing
 

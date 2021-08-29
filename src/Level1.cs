@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -19,12 +20,17 @@ namespace Example
 		internal static void Load(IScene scene)
 		{
 			var sceneDir = new EmbeddedResourceDirectory(nameof(Example) + ".Content.Scene");
-			var collisionDetection = scene.GetService<ICollisionDetection>();
+			var collisionDetection = Helper.CheckServiceExists(scene.GetService<ICollisionDetection>());
 			using (var stream = sceneDir.Open("collisionLayers.json"))
 			{
 				using var reader = new StreamReader(stream);
 				var text = reader.ReadToEnd();
 				var layerLayerCollisions = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(text);
+				if (layerLayerCollisions is null)
+				{
+					Trace.WriteLine($"Could not deserialize collision layers");
+					return;
+				}
 				foreach (var layerCollisions in layerLayerCollisions)
 				{
 					collisionDetection.AddLayer(layerCollisions.Key);
@@ -47,6 +53,11 @@ namespace Example
 				using var reader = new StreamReader(stream);
 				var text = reader.ReadToEnd();
 				var prototypesParams = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, List<string>>>>(text);
+				if (prototypesParams is null)
+				{
+					Trace.WriteLine($"Could not deserialize prototype parameters");
+					return;
+				}
 				foreach (var prototype in prototypesParams)
 				{
 					var go = scene.CreateGameObject(prototype.Key);
@@ -191,10 +202,11 @@ namespace Example
 		{
 			public override Box2 ReadJson(JsonReader reader, Type objectType, Box2 existingValue, bool hasExistingValue, JsonSerializer serializer)
 			{
-				var minX = (float)reader.ReadAsDouble();
-				var minY = (float)reader.ReadAsDouble();
-				var sizeX = (float)reader.ReadAsDouble();
-				var sizeY = (float)reader.ReadAsDouble();
+				float ReadFloat() => (float)(reader.ReadAsDouble() ?? throw new JsonSerializationException("Could not convert Box2"));
+				var minX = ReadFloat();
+				var minY = ReadFloat();
+				var sizeX = ReadFloat();
+				var sizeY = ReadFloat();
 				reader.Read();
 				return Box2Extensions.CreateFromMinSize(minX, minY, sizeX, sizeY);
 			}

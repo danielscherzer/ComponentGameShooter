@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 namespace Core.Services
 {
@@ -50,7 +49,7 @@ namespace Core.Services
 					HandleCollisions(_layerColliders[layer1.Key], _layerColliders[layer2]);
 				}
 			}
-			Trace.WriteLine($"Collider count:{_layerColliders.Values.Sum(colls => colls.Count)}");
+			//Trace.WriteLine($"Collider count:{_layerColliders.Values.Sum(colls => colls.Count)}");
 		}
 
 		public bool Remove(string layer, ICollider collider)

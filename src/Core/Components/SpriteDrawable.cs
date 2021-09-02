@@ -7,7 +7,7 @@ namespace Core.Components
 	{
 		public SpriteDrawable(IGameObject gameObject, string textureName) : base(gameObject)
 		{
-			graphic = Helper.CheckServiceExists(gameObject.Scene.GetService<IGraphic>());
+			graphic = gameObject.Scene.RequireService<IGraphic>();
 			this.textureName = textureName;
 		}
 

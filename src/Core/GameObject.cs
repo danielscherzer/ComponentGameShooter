@@ -24,10 +24,7 @@ namespace Core
 		public Box2 Bounds { get; set; } = Box2Extensions.CreateFromCenterSize(0.0f, 0.0f, 1f, 1f);
 		public IScene Scene { get; }
 
-		public void AddComponent(IComponent component)
-		{
-			_components.Add(component);
-		}
+		public void AddComponent(IComponent component) => _components.Add(component);
 
 		public IGameObject Clone()
 		{
@@ -61,7 +58,7 @@ namespace Core
 		{
 			Enabled = false;
 			DisposeAllFields(this);
-			//_components.Clear();
+			//_components.Clear(); //iteration problem
 		}
 
 		private readonly List<IComponent> _components = new();

@@ -12,8 +12,8 @@ namespace Example
 
 		public PlayerInputBehavior(IGameObject gameObject) : base(gameObject)
 		{
-			input = Helper.CheckServiceExists(gameObject.Scene.GetService<IInput>());
-			gameTime = Helper.CheckServiceExists(gameObject.Scene.GetService<IGameTime>());
+			input = gameObject.Scene.RequireService<IInput>();
+			gameTime = gameObject.Scene.RequireService<IGameTime>();
 		}
 
 		public bool Fire => input.IsButtonDown("Fire");

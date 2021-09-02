@@ -14,7 +14,7 @@ namespace Core.Components
 		public PeriodicBehavior(IGameObject gameObject, float periodSpan, Func<IGameObject, bool> periodicActionReset, float initialPeriodSpan = -1) : base(gameObject)
 		{
 			this.periodicActionReset = periodicActionReset ?? throw new ArgumentNullException(nameof(periodicActionReset));
-			gameTime = Helper.CheckServiceExists(gameObject.Scene.GetService<IGameTime>());
+			gameTime = gameObject.Scene.RequireService<IGameTime>();
 			PeriodSpan = periodSpan;
 			coolDown = initialPeriodSpan;
 		}

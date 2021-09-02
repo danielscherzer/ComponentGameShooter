@@ -1,15 +1,9 @@
 using Core;
 using Core.Components;
 using Core.Services;
-using Newtonsoft.Json;
 using OpenTK.Mathematics;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using Zenseless.OpenTK;
 using Zenseless.Resources;
 
@@ -19,74 +13,10 @@ namespace Example
 	{
 		internal static void Load(IScene scene)
 		{
-			var sceneDir = new EmbeddedResourceDirectory(nameof(Example) + ".Content.Scene");
-			var collisionDetection = Helper.CheckServiceExists(scene.GetService<ICollisionDetection>());
-			using (var stream = sceneDir.Open("collisionLayers.json"))
-			{
-				using var reader = new StreamReader(stream);
-				var text = reader.ReadToEnd();
-				var layerLayerCollisions = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(text);
-				if (layerLayerCollisions is null)
-				{
-					Trace.WriteLine($"Could not deserialize collision layers");
-					return;
-				}
-				foreach (var layerCollisions in layerLayerCollisions)
-				{
-					collisionDetection.AddLayer(layerCollisions.Key);
-					foreach (var layer in layerCollisions.Value)
-					{
-						collisionDetection.AddLayer(layer);
-						collisionDetection.AddLayerToLayerCollision(layerCollisions.Key, layer);
-					}
-				}
-			}
+			EmbeddedResourceDirectory sceneDir = new(nameof(Example) + ".Content.Scene");
+			scene.RequireService<ICollisionDetection>().LoadCollisionLayers(sceneDir);
 
-			var typeInfo = Assembly.GetExecutingAssembly().DefinedTypes.
-				Where(t => t.ImplementedInterfaces.Contains(typeof(IComponent)) && !t.IsAbstract);
-			var types = typeInfo.ToDictionary((t) => t.Name, (t) => t.AsType());
-
-			var prototypes = new Dictionary<string, IGameObject>();
-			//var converter = new JsonConverter[] { new ConvertRectangle() };
-			using (var stream = sceneDir.Open("prototypes.json"))
-			{
-				using var reader = new StreamReader(stream);
-				var text = reader.ReadToEnd();
-				var prototypesParams = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, List<string>>>>(text);
-				if (prototypesParams is null)
-				{
-					Trace.WriteLine($"Could not deserialize prototype parameters");
-					return;
-				}
-				foreach (var prototype in prototypesParams)
-				{
-					var go = scene.CreateGameObject(prototype.Key);
-					go.Enabled = false;
-					prototypes[prototype.Key] = go;
-					foreach (var component in prototype.Value)
-					{
-						var name = component.Key;
-						var type = types[name];
-						var ctor = type.GetConstructors().FirstOrDefault();
-						if (ctor is null) continue;
-						var parameterTypes = ctor.GetParameters();
-						if (typeof(IGameObject) != parameterTypes[0].ParameterType)
-						{
-							throw new Exception($"First constructor for class {name} must have {nameof(IGameObject)} as first parameter to be deserialized.");
-						}
-						var parameterValues = new List<object> { go };
-						for (int i = 1; i < parameterTypes.Length; ++i)
-						{
-							var parameterType = parameterTypes[i].ParameterType;
-							var paramText = component.Value[i - 1];
-							var param = Convert.ChangeType(paramText, parameterType, CultureInfo.InvariantCulture);
-							parameterValues.Add(param);
-						}
-						Activator.CreateInstance(type, parameterValues.ToArray());
-					}
-				}
-			}
-
+			var prototypes = scene.LoadPrototypes(sceneDir);
 			var score = prototypes["Score"].Clone();
 			score.Bounds = Box2Extensions.CreateFromMinSize(-0.9f, -0.9f, 0.05f, 0.05f);
 			var textDrawable = score.GetComponents<TextDrawable>().First();
@@ -197,30 +127,5 @@ namespace Example
 			prototypes["Goblin"].Clone();
 			prototypes["Background"].Clone();
 		}
-
-		private class ConvertRectangle : JsonConverter<Box2>
-		{
-			public override Box2 ReadJson(JsonReader reader, Type objectType, Box2 existingValue, bool hasExistingValue, JsonSerializer serializer)
-			{
-				float ReadFloat() => (float)(reader.ReadAsDouble() ?? throw new JsonSerializationException("Could not convert Box2"));
-				var minX = ReadFloat();
-				var minY = ReadFloat();
-				var sizeX = ReadFloat();
-				var sizeY = ReadFloat();
-				reader.Read();
-				return Box2Extensions.CreateFromMinSize(minX, minY, sizeX, sizeY);
-			}
-
-			public override void WriteJson(JsonWriter writer, Box2 value, JsonSerializer serializer)
-			{
-				writer.WriteStartArray();
-				writer.WriteValue(value.Min.X);
-				writer.WriteValue(value.Min.Y);
-				writer.WriteValue(value.Size.X);
-				writer.WriteValue(value.Size.Y);
-				writer.WriteEndArray();
-			}
-		}
-
 	}
 }

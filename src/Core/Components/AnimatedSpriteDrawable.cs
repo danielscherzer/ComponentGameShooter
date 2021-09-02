@@ -7,8 +7,8 @@ namespace Core.Components
 	{
 		public AnimatedSpriteDrawable(IGameObject gameObject, string textureName, float animationLength, bool looped) : base(gameObject)
 		{
-			graphic = Helper.CheckServiceExists(gameObject.Scene.GetService<IGraphic>());
-			time = Helper.CheckServiceExists(gameObject.Scene.GetService<IGameTime>());
+			graphic = gameObject.Scene.RequireService<IGraphic>();
+			time = gameObject.Scene.RequireService<IGameTime>();
 			this.textureName = textureName;
 			this.animationLength = animationLength;
 			this.looped = looped;

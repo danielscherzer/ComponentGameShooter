@@ -11,7 +11,7 @@ namespace Core.Components
 
 		public MovementBehavior(IGameObject gameObject, Vector2 velocity) : base(gameObject)
 		{
-			gameTime = Helper.CheckServiceExists(gameObject.Scene.GetService<IGameTime>());
+			gameTime = gameObject.Scene.RequireService<IGameTime>();
 			Velocity = velocity;
 		}
 

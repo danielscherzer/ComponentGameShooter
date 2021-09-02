@@ -1,12 +1,10 @@
-using System;
-
-namespace Core
+namespace Core.Components
 {
 	public abstract class Component : IComponent
 	{
 		protected Component(IGameObject gameObject)
 		{
-			GameObject = gameObject ?? throw new ArgumentNullException(nameof(gameObject));
+			GameObject = gameObject;
 			gameObject.AddComponent(this);
 		}
 

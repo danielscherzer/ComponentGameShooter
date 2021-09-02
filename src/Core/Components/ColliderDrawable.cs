@@ -6,7 +6,7 @@ namespace Core.Components
 	{
 		public ColliderDrawable(IGameObject gameObject) : base(gameObject)
 		{
-			graphic = Helper.CheckServiceExists(gameObject.Scene.GetService<IGraphic>());
+			graphic = gameObject.Scene.RequireService<IGraphic>();
 		}
 		public override IComponent CloneTo(IGameObject gameObject) => new ColliderDrawable(gameObject);
 

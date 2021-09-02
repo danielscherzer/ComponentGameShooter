@@ -10,8 +10,8 @@ namespace Core.Components
 
 		public Collider(IGameObject gameObject, Action<IGameObject> collisionResponse, string layer) : base(gameObject)
 		{
-			this._collisionResponse = collisionResponse ?? throw new ArgumentNullException(nameof(collisionResponse));
-			collisionDetection = Helper.CheckServiceExists(gameObject.Scene.GetService<ICollisionDetection>());
+			_collisionResponse = collisionResponse ?? throw new ArgumentNullException(nameof(collisionResponse));
+			collisionDetection = gameObject.Scene.RequireService<ICollisionDetection>();
 			LayerName = layer;
 			collisionDetection.Add(LayerName, this);
 		}
@@ -22,9 +22,9 @@ namespace Core.Components
 
 		private string LayerName { get; }
 
-		public bool Intersects(ICollider other)
+		public bool Overlaps(ICollider other)
 		{
-			return GameObject.Bounds.Intersects(other.GameObject.Bounds);
+			return GameObject.Bounds.Overlaps(other.GameObject.Bounds);
 		}
 
 		public void CollisionResponse(ICollider other)

@@ -12,28 +12,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Content\Textures\awhite.png" />
-    <None Remove="Content\Textures\explosion.xml" />
-    <None Remove="Content\Textures\goblin_0.png" />
-    <None Remove="Content\Textures\goblin_0.xml" />
-    <None Remove="Content\Textures\Video Phreak.xml" />
-    <None Remove="Content\Scene\collisionLayers.json" />
-    <None Remove="Content\Scene\prototypes.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="Content\Textures\blueLaserRay.png" />
     <EmbeddedResource Include="Content\Textures\blueShip.png" />
     <EmbeddedResource Include="Content\Textures\redLaserRay.png" />
     <EmbeddedResource Include="Content\Textures\redship4.png" />
     <EmbeddedResource Include="Content\Textures\explosion.png" />
     <EmbeddedResource Include="Content\Textures\Video Phreak.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="Content\Textures\awhite.png" />
-    <EmbeddedResource Include="Content\SpriteSheets\explosion.xml" />
     <EmbeddedResource Include="Content\Textures\goblin_0.png" />
+    <EmbeddedResource Include="Content\SpriteSheets\explosion.xml" />
     <EmbeddedResource Include="Content\SpriteSheets\goblin_0.xml" />
     <EmbeddedResource Include="Content\SpriteSheets\Video Phreak.xml" />
     <EmbeddedResource Include="Content\Scene\collisionLayers.json" />
@@ -42,8 +29,8 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Zenseless.OpenTK" Version="0.1.16" />
-    <PackageReference Include="Zenseless.Resources" Version="0.1.4" />
+    <PackageReference Include="Zenseless.OpenTK" Version="0.1.23" />
+    <PackageReference Include="Zenseless.Resources" Version="0.1.6" />
   </ItemGroup>
 
 </Project>

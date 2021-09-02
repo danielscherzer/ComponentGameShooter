@@ -6,7 +6,7 @@ namespace Core.Components
 	{
 		public TextDrawable(IGameObject gameObject, string textureName) : base(gameObject)
 		{
-			graphic = Helper.CheckServiceExists(gameObject.Scene.GetService<IGraphic>());
+			graphic = gameObject.Scene.RequireService<IGraphic>();
 			this.textureName = textureName;
 		}
 

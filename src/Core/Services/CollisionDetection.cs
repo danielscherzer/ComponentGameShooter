@@ -64,7 +64,7 @@ namespace Core.Services
 				foreach (var collider2 in layer2Colliders)
 				{
 					if (collider1 == collider2) continue;
-					if (collider1.Intersects(collider2))
+					if (collider1.Overlaps(collider2))
 					{
 						Trace.WriteLine($"collision between {collider1.GameObject.Name} and {collider2.GameObject.Name}");
 						collider1.CollisionResponse(collider2);

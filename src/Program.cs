@@ -11,7 +11,6 @@ using System.Reflection;
 Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
 
 var window = new GameWindow(GameWindowSettings.Default, new NativeWindowSettings { Profile = ContextProfile.Compatability }); // create the window
-
 var scene = new Scene(); // create the scene
 window.UpdateFrame += _ => scene.Update();
 scene.AddService<IGameTime>(new GameTime(window));
@@ -20,12 +19,12 @@ var collisionDetection = new CollisionDetection();
 scene.AddService<ICollisionDetection>(collisionDetection);
 var graphic = new Graphic();
 window.RenderFrame += _ => graphic.Draw();
-window.Resize += args => global::Core.Services.Graphic.Resize(args.Width, args.Height);
+window.Resize += args => Graphic.Resize(args.Width, args.Height);
 scene.AddService<IGraphic>(graphic);
 window.RenderFrame += _ => window.SwapBuffers();
 
 Level1.Load(scene);
-//window.WindowState = WindowState.Fullscreen; // render the window in maximized mode
+//window.WindowState = WindowState.Maximized;
 window.Title = Assembly.GetExecutingAssembly().GetName().Name;
 
 window.KeyDown += args =>

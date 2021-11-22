@@ -124,8 +124,8 @@ namespace Example
 			CreateEnemySpawner(AddPoints);
 			CreatePlayer(0f, 0f, 0.1f);
 
-			prototypes["Goblin"].Clone();
-			prototypes["Background"].Clone();
+			//prototypes["Goblin"].Clone();
+			//prototypes["Background"].Clone();
 		}
 	}
 }

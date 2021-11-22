@@ -1,0 +1,4 @@
+goblin_0.png: Copyright Stephen "Redshrike" Challener as graphic artist and William.Thompsonj as contributor. https://opengameart.org/content/lpc-goblin
+blueship.png, redship4.png: Copyright MillionthVector licensed under a Creative Commons Attribution 4.0 International License.
+explosion.png: https://www.nicepng.com/ourpic/u2q8y3r5r5q8e6e6_explosion-file-sprite-sheet-explosion-sprite-sheet-png/
+Video Phreak.png: https://www.dafont.com/videophreak.font

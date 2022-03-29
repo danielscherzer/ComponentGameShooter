@@ -14,7 +14,7 @@
   },
   "Player": {
     "PlayerInputBehavior": null,
-    "SpriteDrawable": [ "blueShip" ],
+    "SpriteDrawable": [ "blueship" ],
     "ColliderDrawable": null
   },
   "Enemy": {

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -12,25 +12,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Content\Textures\blueLaserRay.png" />
-    <EmbeddedResource Include="Content\Textures\blueShip.png" />
-    <EmbeddedResource Include="Content\Textures\redLaserRay.png" />
-    <EmbeddedResource Include="Content\Textures\redship4.png" />
-    <EmbeddedResource Include="Content\Textures\explosion.png" />
-    <EmbeddedResource Include="Content\Textures\Video Phreak.png" />
-    <EmbeddedResource Include="Content\Textures\awhite.png" />
-    <EmbeddedResource Include="Content\Textures\goblin_0.png" />
-    <EmbeddedResource Include="Content\SpriteSheets\explosion.xml" />
-    <EmbeddedResource Include="Content\SpriteSheets\goblin_0.xml" />
-    <EmbeddedResource Include="Content\SpriteSheets\Video Phreak.xml" />
-    <EmbeddedResource Include="Content\Scene\collisionLayers.json" />
-    <EmbeddedResource Include="Content\Scene\prototypes.json" />
+    <EmbeddedResource Include="Content\**\*.*" Exclude="Content\Textures\copyright.txt" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Zenseless.OpenTK" Version="0.1.23" />
-    <PackageReference Include="Zenseless.Resources" Version="0.1.6" />
+    <PackageReference Include="Zenseless.OpenTK" Version="0.1.38" />
+    <PackageReference Include="Zenseless.Resources" Version="0.1.10" />
   </ItemGroup>
 
 </Project>

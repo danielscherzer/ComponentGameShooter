@@ -1,16 +1,16 @@
 using Core;
 using Core.Services;
 using Example;
-using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System;
 using System.Diagnostics;
 using System.Reflection;
+using Zenseless.OpenTK;
 
 Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
 
-var window = new GameWindow(GameWindowSettings.Default, new NativeWindowSettings { Profile = ContextProfile.Compatability }); // create the window
+var window = new GameWindow(GameWindowSettings.Default, ImmediateMode.NativeWindowSettings); // create the window
 var scene = new Scene(); // create the scene
 window.UpdateFrame += _ => scene.Update();
 scene.AddService<IGameTime>(new GameTime(window));

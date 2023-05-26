@@ -10,7 +10,7 @@ namespace Core
 	{
 		internal static Type LoadJson<Type>(this IResourceDirectory resourceDirectory, string name)
 		{
-			var text = resourceDirectory.Resource(name).OpenText();
+			var text = resourceDirectory.Resource(name).AsString();
 			return JsonConvert.DeserializeObject<Type>(text) ?? throw new ArgumentException($"Could not deserialize '{name}'");
 		}
 		//var converter = new JsonConverter[] { new ConvertRectangle() };
